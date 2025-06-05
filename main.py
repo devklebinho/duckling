@@ -65,7 +65,6 @@ def on_mouse_down(pos):
         elif btn_musicOn.collidepoint(pos):
             sound_enabled = not sound_enabled
             print('Music ON' if sound_enabled else 'Music OFF')
-            # Atualiza música baseada no estado atual do jogo
             if game_state == 'menu':
                 play_music('music_menu')
             elif game_state == 'gameplay':
