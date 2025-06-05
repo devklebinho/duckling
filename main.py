@@ -29,11 +29,15 @@ btn_exit.pos = 400, 400
 
 # ----- PLAYER SETTINGS -----
 alien = Actor('character_green_idle')
+
 alien.pos = 100, 400
-alien.vx = 0  
-alien.vy = 0 
+alien.xVelocity = 0  
+alien.yVelocity = 0 
 alien.speed = 3  
 alien.on_ground = False
+alien.gravity = 0.5
+alien.jump_strength = -10
+
 
 
 # ----- MUSIC CONTROLLER -----
@@ -79,6 +83,8 @@ def on_key_down(key):
     if game_state == 'gameplay' and key == keys.ESCAPE:
         print("Voltando ao menu...")
         game_state = 'menu'
+    elif key == keys.SPACE and alien.on_ground:
+        alien.yVelocity = alien.jump_strength
 
 def update_player():
     if keyboard.left:
@@ -86,12 +92,13 @@ def update_player():
     if keyboard.right:
         alien.x += alien.speed
 
-    alien.vy += 0.5  
-    alien.y += alien.vy
+    alien.yVelocity += alien.gravity  
+    alien.y += alien.yVelocity
 
+    #simulating a floor(y = 500)
     if alien.y >= 500:
         alien.y = 500
-        alien.vy = 0
+        alien.yVelocity = 0
         alien.on_ground = True
     else:
         alien.on_ground = False
@@ -107,7 +114,7 @@ def draw_menu():
 
 def draw_gameplay():
     screen.clear()
-    screen.fill((92, 148, 252))  # cor de fundo tipo céu
+    screen.fill((92, 148, 252))
     alien.draw()
 
 def draw():
@@ -130,6 +137,5 @@ def update():
         draw_gameplay()
     elif game_state == 'game_over':
         play_music('music_ending')
-
 
 pgzrun.go()
