@@ -27,8 +27,14 @@ btn_musicOn.pos = 400, 330
 btn_exit = Actor('ui_exit')
 btn_exit.pos = 400, 400
 
-# ----- GAMEPLAY ACTORS -----
+# ----- PLAYER SETTINGS -----
 alien = Actor('character_green_idle')
+alien.pos = 100, 400
+alien.vx = 0  
+alien.vy = 0 
+alien.speed = 3  
+alien.on_ground = False
+
 
 # ----- MUSIC CONTROLLER -----
 def play_music(track_name):
@@ -74,6 +80,23 @@ def on_key_down(key):
         print("Voltando ao menu...")
         game_state = 'menu'
 
+def update_player():
+    if keyboard.left:
+        alien.x -= alien.speed
+    if keyboard.right:
+        alien.x += alien.speed
+
+    alien.vy += 0.5  
+    alien.y += alien.vy
+
+    if alien.y >= 500:
+        alien.y = 500
+        alien.vy = 0
+        alien.on_ground = True
+    else:
+        alien.on_ground = False
+
+
 # ----- DRAW's -----
 def draw_menu():
     screen.clear()
@@ -84,11 +107,18 @@ def draw_menu():
 
 def draw_gameplay():
     screen.clear()
-    
+    screen.fill((92, 148, 252))  # cor de fundo tipo céu
+    alien.draw()
 
 def draw():
-    draw_menu()
-    
+    if game_state == 'menu':
+        draw_menu()
+    elif game_state == 'gameplay':
+        draw_gameplay()
+    elif game_state == 'game_over':
+        screen.clear()
+        screen.draw.text("FIM DE JOGO", center=(WIDTH // 2, HEIGHT // 2), fontsize=60, color="white")
+
 # ----- UPDATE LOOP -----
 def update():
     if game_state == 'menu':
@@ -96,8 +126,10 @@ def update():
         draw_menu()
     elif game_state == 'gameplay':
         play_music('music_level1')
+        update_player()
         draw_gameplay()
     elif game_state == 'game_over':
         play_music('music_ending')
+
 
 pgzrun.go()
